@@ -154,15 +154,7 @@ function(myproject_package_project)
 
   unset(_PackageProject_TARGETS)
 
-  # download ForwardArguments
-  # BUG :this not work when use FetchContent_MakeAvailable instead of FetchContent_Populate
-  # download ForwardArguments
-  # FetchContent_Declare(
-  #   _fargs
-  #   URL https://github.com/polysquare/cmake-forward-arguments/archive/8c50d1f956172edb34e95efa52a2d5cb1f686ed2.zip)
-  # FetchContent_Populate(_fargs)
-  #
-  include("cmake/ForwardArguments.cmake")
+  include("${CMAKE_CURRENT_LIST_DIR}/cmake/ForwardArguments.cmake")
 
   # prepare the forward arguments for ycm
   set(_FARGS_LIST)
@@ -176,6 +168,7 @@ function(myproject_package_project)
     MULTIVAR_ARGS
     "${_multiValueArgs};DEPENDENCIES;PRIVATE_DEPENDENCIES")
 
+  include(FetchContent)
   # download ycm
   FetchContent_Declare(
     _ycm

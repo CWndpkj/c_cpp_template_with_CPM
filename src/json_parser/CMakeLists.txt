@@ -7,7 +7,6 @@ target_link_system_libraries(
   fmt::fmt
   spdlog::spdlog
   jsoncpp
-  dbg_macro
-)
+  dbg_macro)
 
 target_include_directories(json_parser PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")
