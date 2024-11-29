@@ -13,7 +13,6 @@ env:
   CLANG_TIDY_VERSION: "15.0.2"
   VERBOSE: 1
 
-
 jobs:
   Test:
     runs-on: ${{ matrix.os }}
@@ -29,13 +28,13 @@ jobs:
       # and your own projects needs
       matrix:
         os:
-          - ubuntu-20.04
-          - macos-10.15
-          - windows-2019
+          - ubuntu-22.04
+          - macos-12
+          - windows-2022
         compiler:
           # you can specify the version after `-` like "llvm-15.0.2".
           - llvm-15.0.2
-          - gcc-11
+          - gcc-13
         generator:
           - "Ninja Multi-Config"
         build_type:
@@ -49,13 +48,13 @@ jobs:
 
         exclude:
           # mingw is determined by this author to be too buggy to support
-          - os: windows-2019
-            compiler: gcc-11
+          - os: windows-2022
+            compiler: gcc-13
 
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set
-          - compiler: gcc-11
+          - compiler: gcc-13
             gcov_executable: gcov
             enable_ipo: On
 
@@ -63,7 +62,7 @@ jobs:
             enable_ipo: Off
             gcov_executable: "llvm-cov gcov"
 
-          - os: macos-10.15
+          - os: macos-12
             enable_ipo: Off
 
           # Set up preferred package generators, for given build configurations
@@ -72,8 +71,8 @@ jobs:
             package_generator: TBZ2
 
           # This exists solely to make sure a non-multiconfig build works
-          - os: ubuntu-20.04
-            compiler: gcc-11
+          - os: ubuntu-22.04
+            compiler: gcc-13
             generator: "Unix Makefiles"
             build_type: Debug
             gcov_executable: gcov
@@ -116,7 +115,6 @@ jobs:
             enable_ipo: On
             build_shared: On
 
-
     steps:
       - name: Check for llvm version mismatches
         if: ${{ contains(matrix.compiler, 'llvm') && !contains(matrix.compiler, env.CLANG_TIDY_VERSION) }}
@@ -138,8 +136,7 @@ jobs:
       - name: Project Name
         uses: cardinalby/export-env-action@v2
         with:
-          envFile: '.github/constants.env'
-
+          envFile: ".github/constants.env"
 
       - name: Setup Cpp
         uses: aminya/setup-cpp@v1
@@ -152,7 +149,6 @@ jobs:
           vcpkg: false
           ccache: true
           clangtidy: ${{ env.CLANG_TIDY_VERSION }}
-
 
           cppcheck: true
 
@@ -196,10 +192,10 @@ jobs:
           files: |
             build/*-*${{ matrix.build_type }}*-*.*
 
-
       - name: Publish to codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v4
         with:
           flags: ${{ runner.os }}
           name: ${{ runner.os }}-coverage
           files: ./build/coverage.xml
+          verbose: true # optional (default = false)
